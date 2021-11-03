@@ -123,6 +123,20 @@ func probeHandler(w http.ResponseWriter, r *http.Request, c *config.Config, logg
 	sl := newScrapeLogger(logger, moduleName, target)
 	level.Info(sl).Log("msg", "Beginning probe", "probe", module.Prober, "timeout_seconds", timeoutSeconds)
 
+	// replaced prober module config by Query Parameter
+	if module.Prober == "http" {
+		if module.HTTP.Headers == nil {
+			module.HTTP.Headers = make(map[string]string)
+		}
+
+		host := params.Get("http.headers.Host")
+		if host != "" {
+			module.HTTP.Headers["Host"] = host
+			// for tls handshake
+			module.HTTP.HTTPClientConfig.TLSConfig.ServerName = host
+		}
+	}
+
 	start := time.Now()
 	registry := prometheus.NewRegistry()
 	registry.MustRegister(probeSuccessGauge)
