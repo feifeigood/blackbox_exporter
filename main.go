@@ -129,7 +129,7 @@ func probeHandler(w http.ResponseWriter, r *http.Request, c *config.Config, logg
 			module.HTTP.Headers = make(map[string]string)
 		}
 
-		host := params.Get("http.headers.Host")
+		host := params.Get("http_headers_host")
 		if host != "" {
 			module.HTTP.Headers["Host"] = host
 			// for tls handshake
