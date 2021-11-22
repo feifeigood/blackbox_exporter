@@ -459,10 +459,10 @@ func ProbeHTTP(ctx context.Context, target string, module config.Module, registr
 				level.Info(logger).Log("msg", "Invalid HTTP response status code", "status_code", resp.StatusCode,
 					"valid_status_codes", fmt.Sprintf("%v", httpConfig.ValidStatusCodes))
 			}
-		} else if 200 <= resp.StatusCode && resp.StatusCode < 300 {
+		} else if resp.StatusCode < 500 {
 			success = true
 		} else {
-			level.Info(logger).Log("msg", "Invalid HTTP response status code, wanted 2xx", "status_code", resp.StatusCode)
+			level.Info(logger).Log("msg", "Invalid HTTP response status code, wanted less than 5xx", "status_code", resp.StatusCode)
 		}
 
 		if success && (len(httpConfig.FailIfHeaderMatchesRegexp) > 0 || len(httpConfig.FailIfHeaderNotMatchesRegexp) > 0) {
